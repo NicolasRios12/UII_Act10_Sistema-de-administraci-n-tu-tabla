@@ -1,0 +1,113 @@
+{% extends 'reservaciones/base.html' %}
+{% block body %}
+<h3 class="m-4">Todas las reservaciones</h3>
+<div class="row">
+  <div class="col-12">
+    {% if reservaciones %}
+    <div class="card bg-light ms-4 me-4 mb-4">
+      <div class="card-header">
+        <i class="fa-solid fa-list fa-lg"></i> Reservaciones 
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">id_cliente</th>
+                  <th scope="col">telefono</th>
+                  <th scope="col">fecha_reserva</th>
+                  <th scope="col">hora_reserva</th>
+                  <th scope="col">num_personas</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in reservaciones %}
+                <tr>
+                  <td>{{ r.id_cliente }}</td>
+                  <td>{{ r.telefono }}</td>
+                  <td>{{ r.fecha_reserva }}</td>
+                  <td>{{ r.hora_reserva }}</td>
+                  <td>{{ r.num_personas }}</td>
+                  <td>
+                    <button type="button" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#myModal{{r.id}}">
+                      <i class="fa-solid fa-circle-info fa-lg"></i>
+                    </button>
+
+                     <!-- Modal - View Reservacion -->
+                      <div class="modal" id="myModal{{r.id}}" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">
+                                reservacion: {{ r.fecha_reserva }} {{ r.hora_reserva }}
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="list-unstyled">
+                                <li><strong>id_cliente:</strong> {{ r.id_cliente }}</li>
+                                <li><strong>telefono:</strong> {{ r.telefono }}</li>
+                                <li><strong>fecha_reserva:</strong> {{ r.fecha_reserva }}</li>
+                                <li><strong>hora_reserva:</strong> {{ r.hora_reserva }}</li>
+                                <li><strong>num_personas:</strong> {{ r.num_personas }}</li>
+                              </ul>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <a class="btn btn-warning me-1" href="{% url 'edit' r.id %}">
+                        <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                      </a>
+
+                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{r.id}}">
+                        <i class="fa-solid fa-trash-can fa-lg"></i>
+                      </button>
+
+                      <!-- Modal - Delete Reservacion -->
+                      <div class="modal" id="delete{{r.id}}" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">
+                                Eliminar reservacion: {{ r.fecha_reserva }} {{ r.hora_reserva }}
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <p>¿Estás seguro de que deseas eliminar esta reservacion?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <form action="{% url 'delete' r.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-primary" value="Delete">
+                              </form>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    {% else %}
+      <h5 class="alert alert-primary ms-4 me-4">no hay reservaciones</h5>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
